@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Daily Quota Training — Roll Call</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="dot"></span> Roll Call</div>
+    <a class="back-link" href="index.html">← Home</a>
+  </header>
+
+  <main class="page">
+    <div class="page-header">
+      <div class="page-eyebrow">01 — Submit</div>
+      <h1 class="page-title">Daily Quota Training</h1>
+      <p class="page-desc">
+        Fill in today's numbers. Add extra runs if more than one type was completed.
+        Your submission is time-stamped automatically.
+      </p>
+    </div>
+
+    <form id="quota-form" class="panel">
+      <div class="field">
+        <label for="name">Name</label>
+        <input type="text" id="name" required autocomplete="off" />
+      </div>
+
+      <div class="field">
+        <label for="bunk">Bunk Number</label>
+        <select id="bunk" required>
+          <option value="" disabled selected>Select bunk</option>
+          <option value="36">36</option>
+          <option value="37">37</option>
+          <option value="38">38</option>
+          <option value="39">39</option>
+        </select>
+      </div>
+
+      <div class="row-3">
+        <div class="field">
+          <label for="pushups">Pushups</label>
+          <input type="number" id="pushups" min="0" required />
+        </div>
+        <div class="field">
+          <label for="situps">Situps</label>
+          <input type="number" id="situps" min="0" required />
+        </div>
+        <div class="field">
+          <label for="squats">Squats</label>
+          <input type="number" id="squats" min="0" required />
+        </div>
+      </div>
+
+      <hr class="divider" />
+
+      <div id="runs-container"></div>
+
+      <button type="button" id="add-run-btn" class="btn-add">+ Add another run</button>
+
+      <button type="submit" id="submit-btn" class="btn-submit">Submit Entry</button>
+
+      <div id="status-msg" class="status-msg"></div>
+    </form>
+  </main>
+
+  <script src="config.js"></script>
+  <script src="training.js"></script>
+</body>
+</html>

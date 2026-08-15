@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Data Entries — Roll Call</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <header class="topbar">
+    <div class="brand"><span class="dot"></span> Roll Call</div>
+    <a class="back-link" href="index.html">← Home</a>
+  </header>
+
+  <main class="page">
+    <div class="page-header">
+      <div class="page-eyebrow">02 — Review</div>
+      <h1 class="page-title">Data Entries</h1>
+      <p class="page-desc">Pick a week, then a day, to see everything logged for that date.</p>
+    </div>
+
+    <div class="filter-panel">
+      <div class="filter-field">
+        <label for="week-select">Week</label>
+        <select id="week-select">
+          <option value="" disabled selected>Select week</option>
+        </select>
+      </div>
+      <div class="filter-field">
+        <label for="date-select">Day</label>
+        <select id="date-select" disabled>
+          <option value="" disabled selected>Select week first</option>
+        </select>
+      </div>
+    </div>
+
+    <div class="table-wrap">
+      <table id="data-table" style="display:none">
+        <thead>
+          <tr>
+            <th>Bunk</th>
+            <th>Name</th>
+            <th>Pushups</th>
+            <th>Situps</th>
+            <th>Squats</th>
+            <th>Run</th>
+          </tr>
+        </thead>
+        <tbody id="data-tbody"></tbody>
+      </table>
+      <div id="table-state" class="empty-state">Select a week and day to view entries.</div>
+    </div>
+
+    <p class="hint">
+      Data is read live from the linked Google Sheet. If nothing loads, double-check that
+      config.js has your Apps Script Web App URL and that the deployment is set to "Anyone" access.
+    </p>
+  </main>
+
+  <script src="config.js"></script>
+  <script src="data.js"></script>
+</body>
+</html>
