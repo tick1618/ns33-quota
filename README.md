@@ -10,6 +10,7 @@ A static site (for GitHub Pages) with a Google Sheet as the data store.
 - `style.css` — shared styling
 - `config.js` — to point at Google Sheet
 - `apps-script.gs` — backend code, pasted into Google Apps Script (not hosted on GitHub)
+- `SETUP.txt` - code setup text doc
 
 ## Website
 
