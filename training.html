@@ -8,7 +8,7 @@
 </head>
 <body>
   <header class="topbar">
-    <div class="brand"><span class="dot"></span> NS33 Quota</div>
+    <div class="brand"><span class="dot"></span> Roll Call</div>
     <a class="back-link" href="index.html">← Home</a>
   </header>
 
@@ -24,11 +24,6 @@
 
     <form id="quota-form" class="panel">
       <div class="field">
-        <label for="name">Name</label>
-        <input type="text" id="name" required autocomplete="off" />
-      </div>
-
-      <div class="field">
         <label for="bunk">Bunk Number</label>
         <select id="bunk" required>
           <option value="" disabled selected>Select bunk</option>
@@ -36,6 +31,13 @@
           <option value="37">37</option>
           <option value="38">38</option>
           <option value="39">39</option>
+        </select>
+      </div>
+
+      <div class="field">
+        <label for="name">Name</label>
+        <select id="name" required disabled>
+          <option value="" disabled selected>Select bunk first</option>
         </select>
       </div>
 
