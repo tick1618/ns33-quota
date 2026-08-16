@@ -4,13 +4,15 @@ A static site (for GitHub Pages) with a Google Sheet as the data store.
 
 ## Files
 
-- `index.html` — home page, two buttons
-- `training.html` / `training.js` — the submission form
-- `data.html` / `data.js` — the week/day viewer
+- `index.html` — home page, three buttons
+- `training.html` / `training.js` — the submission form for daily quota
+- `weekly.html` / `weekly.js` — the submission form for weekly run quota
+- `data.html` / `data.js` — the data viewer
+- `roster.js` — NS33 roster
 - `style.css` — shared styling
 - `config.js` — to point at Google Sheet
 - `apps-script.gs` — backend code, pasted into Google Apps Script (not hosted on GitHub)
-- `SETUP.txt` - code setup text doc
+- `setup.txt` — code setup text doc
 
 ## Website
 

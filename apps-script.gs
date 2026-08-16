@@ -4,30 +4,41 @@
 // Google Sheet, then deploy as a Web App (see README.md).
 // ============================================================
 
-const SHEET_NAME = "Data";
-const HEADERS = ["Timestamp", "Date", "Time", "Bunk", "Name", "Pushups", "Situps", "Squats", "Run"];
-const TIMEZONE = "Asia/Singapore"; // GMT+8, used for the Date/Time columns
+const TIMEZONE = "Asia/Singapore"; // GMT+8, fixed offset, no DST
 
-function getOrCreateSheet_() {
+const DAILY_SHEET_NAME = "Data";
+const DAILY_HEADERS = ["Timestamp", "Date", "Time", "Bunk", "Name", "Pushups", "Situps", "Squats", "Run"];
+
+const WEEKLY_SHEET_NAME = "WeeklyRunQuota";
+const WEEKLY_HEADERS = ["Timestamp", "Week", "Bunk", "Name", "Distance"];
+
+// Monday 00:00 SGT of week 7 = 17 Aug 2026. Every later week is +7 days.
+const WEEK_7_MONDAY_UTC_MILLIS = Date.UTC(2026, 7, 17, 0, 0, 0);
+
+function getOrCreateSheet_(name, headers) {
   const ss = SpreadsheetApp.getActiveSpreadsheet();
-  let sheet = ss.getSheetByName(SHEET_NAME);
+  let sheet = ss.getSheetByName(name);
   if (!sheet) {
-    sheet = ss.insertSheet(SHEET_NAME);
-    sheet.appendRow(HEADERS);
-    sheet.getRange(1, 1, 1, HEADERS.length).setFontWeight("bold");
+    sheet = ss.insertSheet(name);
+    sheet.appendRow(headers);
+    sheet.getRange(1, 1, 1, headers.length).setFontWeight("bold");
   }
   return sheet;
+}
+
+function jsonOutput_(obj) {
+  return ContentService.createTextOutput(JSON.stringify(obj)).setMimeType(ContentService.MimeType.JSON);
 }
 
 // Pulls just the numeric portion out of a distance string like "5", "5 km",
 // or "5km" and returns it as "5km" (no space).
 function formatDistance_(distance) {
-  var match = String(distance).match(/(\d+(\.\d+)?)/);
+  const match = String(distance).match(/(\d+(\.\d+)?)/);
   if (!match) return distance; // fallback: couldn't find a number, leave as typed
   return match[1] + "km";
 }
 
-// Formats the "runs" array from the form into the required string:
+// Formats the "runs" array from the daily form into the required string:
 // "0" if no runs, "type value" if exactly one, otherwise
 // "(type value) + (type value) + ..."
 function formatRuns_(runs) {
@@ -36,7 +47,7 @@ function formatRuns_(runs) {
   const parts = [];
   runs.forEach(function (r) {
     if (!r.type || r.type === "No run") return;
-    var entry;
+    let entry;
     if (r.type === "Intervals") {
       entry = r.type + " " + r.sets + " x " + r.reps;
     } else {
@@ -50,34 +61,58 @@ function formatRuns_(runs) {
   return parts.map(function (p) { return "(" + p + ")"; }).join(" + ");
 }
 
+// Buckets a submission time into a week number (7, 8, 9, ...) based on
+// Singapore wall-clock time. A submission counts toward week N if it lands
+// on or after Monday 00:00 SGT of week N and before Monday 00:00 SGT of
+// week N+1.
+function computeWeek_(date) {
+  const sgtMillis = date.getTime() + 8 * 60 * 60 * 1000; // shift UTC instant to SGT wall-clock
+  const diffDays = Math.floor((sgtMillis - WEEK_7_MONDAY_UTC_MILLIS) / 86400000);
+  return 7 + Math.floor(diffDays / 7);
+}
+
 function doPost(e) {
-  const sheet = getOrCreateSheet_();
   const data = JSON.parse(e.postData.contents);
 
+  if (data.formType === "weekly") {
+    return postWeekly_(data);
+  }
+  return postDaily_(data);
+}
+
+function postDaily_(data) {
+  const sheet = getOrCreateSheet_(DAILY_SHEET_NAME, DAILY_HEADERS);
   const now = new Date();
   const dateStr = Utilities.formatDate(now, TIMEZONE, "dd/MM/yyyy");
   const timeStr = Utilities.formatDate(now, TIMEZONE, "HH:mm:ss");
-
   const runString = formatRuns_(data.runs);
 
-  sheet.appendRow([
-    now,
-    dateStr,
-    timeStr,
-    data.bunk,
-    data.name,
-    data.pushups,
-    data.situps,
-    data.squats,
-    runString,
-  ]);
+  sheet.appendRow([now, dateStr, timeStr, data.bunk, data.name, data.pushups, data.situps, data.squats, runString]);
 
-  return ContentService.createTextOutput(JSON.stringify({ status: "ok" }))
-    .setMimeType(ContentService.MimeType.JSON);
+  return jsonOutput_({ status: "ok" });
+}
+
+function postWeekly_(data) {
+  const sheet = getOrCreateSheet_(WEEKLY_SHEET_NAME, WEEKLY_HEADERS);
+  const now = new Date();
+  const week = computeWeek_(now);
+  const distance = formatDistance_(data.distance);
+
+  sheet.appendRow([now, week, data.bunk, data.name, distance]);
+
+  return jsonOutput_({ status: "ok" });
 }
 
 function doGet(e) {
-  const sheet = getOrCreateSheet_();
+  const formType = e.parameter.formType || "daily";
+  if (formType === "weekly") {
+    return getWeeklyEntries_(e);
+  }
+  return getDailyEntries_(e);
+}
+
+function getDailyEntries_(e) {
+  const sheet = getOrCreateSheet_(DAILY_SHEET_NAME, DAILY_HEADERS);
   const dateFilter = e.parameter.date; // expected format dd/MM/yyyy
 
   const values = sheet.getDataRange().getValues();
@@ -98,6 +133,26 @@ function doGet(e) {
       };
     });
 
-  return ContentService.createTextOutput(JSON.stringify(result))
-    .setMimeType(ContentService.MimeType.JSON);
+  return jsonOutput_(result);
+}
+
+function getWeeklyEntries_(e) {
+  const sheet = getOrCreateSheet_(WEEKLY_SHEET_NAME, WEEKLY_HEADERS);
+  const weekFilter = e.parameter.week ? Number(e.parameter.week) : null;
+
+  const values = sheet.getDataRange().getValues();
+  const rows = values.slice(1); // drop header row
+
+  const result = rows
+    .filter(function (row) { return !weekFilter || Number(row[1]) === weekFilter; })
+    .map(function (row) {
+      return {
+        week: row[1],
+        bunk: row[2],
+        name: row[3],
+        distance: row[4],
+      };
+    });
+
+  return jsonOutput_(result);
 }

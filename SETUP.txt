@@ -4,9 +4,11 @@ A static site (for GitHub Pages) with a Google Sheet as the data store.
 
 ## Files
 
-- `index.html` — home page, two buttons
-- `training.html` / `training.js` — the submission form
-- `data.html` / `data.js` — the week/day viewer
+- `index.html` — home page, three buttons
+- `training.html` / `training.js` — the daily quota submission form
+- `weekly.html` / `weekly.js` — the weekly run quota submission form
+- `roster.js` — shared bunk → name roster, used by both forms
+- `data.html` / `data.js` — the viewer (switches between daily and weekly views)
 - `style.css` — shared styling
 - `config.js` — **you edit this** to point at your Google Sheet
 - `apps-script.gs` — backend code, pasted into Google Apps Script (not hosted on GitHub)
@@ -41,6 +43,11 @@ paste in the entire contents of `apps-script.gs`. Click the save icon.
   project → Allow)
 - Copy the **Web app URL** it gives you (ends in `/exec`)
 
+> Whenever you update `apps-script.gs` later (like for this feature), paste
+> the new code into the same Apps Script project, then **Deploy → Manage
+> deployments → edit (pencil icon) → New version → Deploy**. Just saving the
+> script doesn't update the live URL — you need a new version each time.
+
 ### 4. Connect the site to the Sheet
 Open `config.js` and replace the placeholder:
 
@@ -63,6 +70,28 @@ pick your branch/folder. Your site will be live at
 - **The Data Entries page** sends a GET request with a date, and the script
   returns every row matching that date as JSON, which the page renders as a
   table sorted by bunk number.
+
+## Weekly Run Quota
+
+The "Weekly Run Quota" form logs just a bunk, name, and total run distance —
+no run type needed. It writes to a separate sheet tab (`WeeklyRunQuota`,
+created automatically on first submission) rather than the daily `Data` tab.
+
+Each submission is automatically bucketed into a week number based on when
+it's submitted, using Singapore time:
+
+- Week 7 = Monday 00:00 SGT on 17/08/2026 through just before Monday 00:00
+  SGT on 24/08/2026
+- Week 8 = the following Monday–Sunday, and so on
+
+This is computed server-side in `apps-script.gs` (`computeWeek_`), so it's
+always based on the actual submission time — not something you need to set
+manually. If the program's start date ever changes, update
+`WEEK_7_MONDAY_UTC_MILLIS` in that file.
+
+On the Data Entries page, the new "Log Type" dropdown switches between the
+two views: daily entries (week + day, six columns) and weekly entries (week
+only, three columns: Bunk, Name, Total Run Distance).
 
 ## Run string format
 

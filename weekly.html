@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Daily Quota Training</title>
+  <title>Weekly Run Quota</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
@@ -14,15 +14,15 @@
 
   <main class="page">
     <div class="page-header">
-      <div class="page-eyebrow">01 — Submit</div>
-      <h1 class="page-title">Daily Quota Training</h1>
+      <div class="page-eyebrow">02 — Submit</div>
+      <h1 class="page-title">Weekly Run Quota</h1>
       <p class="page-desc">
-        Fill in today's numbers. Add extra runs if more than one type was completed.
-        Your submission is time-stamped automatically.
+        Log your total run distance for the week. This is tracked separately from
+        the daily quota log — no need to specify what kind of running you did.
       </p>
     </div>
 
-    <form id="quota-form" class="panel">
+    <form id="weekly-form" class="panel">
       <div class="field">
         <label for="bunk">Bunk Number</label>
         <select id="bunk" required>
@@ -41,26 +41,10 @@
         </select>
       </div>
 
-      <div class="row-3">
-        <div class="field">
-          <label for="pushups">Pushups</label>
-          <input type="number" id="pushups" min="0" required />
-        </div>
-        <div class="field">
-          <label for="situps">Situps</label>
-          <input type="number" id="situps" min="0" required />
-        </div>
-        <div class="field">
-          <label for="squats">Squats</label>
-          <input type="number" id="squats" min="0" required />
-        </div>
+      <div class="field">
+        <label for="distance">Total Run Distance (km)</label>
+        <input type="text" id="distance" placeholder="e.g. 12" required autocomplete="off" />
       </div>
-
-      <hr class="divider" />
-
-      <div id="runs-container"></div>
-
-      <button type="button" id="add-run-btn" class="btn-add">+ Add another run</button>
 
       <button type="submit" id="submit-btn" class="btn-submit">Submit Entry</button>
 
@@ -70,6 +54,6 @@
 
   <script src="config.js"></script>
   <script src="roster.js"></script>
-  <script src="training.js"></script>
+  <script src="weekly.js"></script>
 </body>
 </html>

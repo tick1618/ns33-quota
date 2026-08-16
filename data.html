@@ -14,19 +14,27 @@
 
   <main class="page">
     <div class="page-header">
-      <div class="page-eyebrow">02 — Review</div>
+      <div class="page-eyebrow">03 — Review</div>
       <h1 class="page-title">Data Entries</h1>
-      <p class="page-desc">Pick a week, then a day, to see everything logged for that date.</p>
+      <p class="page-desc">Choose a log type, then a week (and day, for daily entries) to view results.</p>
     </div>
 
     <div class="filter-panel">
       <div class="filter-field">
-        <label for="week-select">Week</label>
-        <select id="week-select">
-          <option value="" disabled selected>Select week</option>
+        <label for="type-select">Log Type</label>
+        <select id="type-select">
+          <option value="" disabled selected>Select type</option>
+          <option value="daily">Daily Quota Training</option>
+          <option value="weekly">Weekly Run Quota</option>
         </select>
       </div>
       <div class="filter-field">
+        <label for="week-select">Week</label>
+        <select id="week-select" disabled>
+          <option value="" disabled selected>Select type first</option>
+        </select>
+      </div>
+      <div class="filter-field" id="day-field">
         <label for="date-select">Day</label>
         <select id="date-select" disabled>
           <option value="" disabled selected>Select week first</option>
@@ -36,24 +44,16 @@
 
     <div class="table-wrap">
       <table id="data-table" style="display:none">
-        <thead>
-          <tr>
-            <th>Bunk</th>
-            <th>Name</th>
-            <th>Pushups</th>
-            <th>Situps</th>
-            <th>Squats</th>
-            <th>Run</th>
-          </tr>
-        </thead>
+        <thead id="table-head"></thead>
         <tbody id="data-tbody"></tbody>
       </table>
-      <div id="table-state" class="empty-state">Select a week and day to view entries.</div>
+      <div id="table-state" class="empty-state">Select a log type to get started.</div>
     </div>
 
     <p class="hint">
-      Data is read live from the linked Google Sheet. If nothing loads, double-check that
-      config.js has your Apps Script Web App URL and that the deployment is set to "Anyone" access.
+      Data is read live from the linked Google Sheet (Data and WeeklyRunQuota tabs). If nothing
+      loads, double-check that config.js has your Apps Script Web App URL and that the deployment
+      is set to "Anyone" access.
     </p>
   </main>
 
