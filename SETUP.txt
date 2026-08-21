@@ -1,4 +1,4 @@
-# Roll Call — Daily Quota Training Tracker
+# Daily Quota Training Tracker
 
 A static site (for GitHub Pages) with a Google Sheet as the data store.
 

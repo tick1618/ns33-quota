@@ -1,5 +1,5 @@
 /* ============================================================
-   Roll Call — shared styles
+   NS33 Quota Tracker — shared styles
    Palette: field olive, paper cream, stencil ink, PT-belt orange
    ============================================================ */
 
@@ -530,12 +530,15 @@ a {
   background: var(--paper);
   border: 2px solid var(--ink);
   border-radius: 16px;
-  overflow: hidden;
+  overflow-x: auto;
+  overflow-y: hidden;
+  -webkit-overflow-scrolling: touch;
   box-shadow: 0 8px 0 rgba(0, 0, 0, 0.28), 0 16px 24px rgba(0, 0, 0, 0.3);
 }
 
 table {
   width: 100%;
+  min-width: 640px;
   border-collapse: collapse;
   color: var(--ink);
 }
@@ -549,6 +552,7 @@ thead th {
   letter-spacing: 0.12em;
   text-transform: uppercase;
   padding: 14px 16px;
+  white-space: nowrap;
 }
 
 tbody td {
@@ -556,6 +560,7 @@ tbody td {
   font-size: 14px;
   border-top: 1px solid #e2d9bc;
   font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
 tbody tr:nth-child(even) {
@@ -573,6 +578,26 @@ tbody tr:nth-child(even) {
   color: var(--paper);
   font-weight: 800;
   font-size: 12px;
+}
+
+.bunk-badge.bunk-36 {
+  background: #cfe2f3;
+  color: #201f19;
+}
+
+.bunk-badge.bunk-37 {
+  background: #d9ead3;
+  color: #201f19;
+}
+
+.bunk-badge.bunk-38 {
+  background: #fff2cc;
+  color: #201f19;
+}
+
+.bunk-badge.bunk-39 {
+  background: #d9d2e9;
+  color: #201f19;
 }
 
 .empty-state,

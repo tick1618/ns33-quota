@@ -1,9 +1,3 @@
-// ============================================================
-// Roll Call — Apps Script backend
-// Paste this whole file into Extensions > Apps Script in your
-// Google Sheet, then deploy as a Web App (see README.md).
-// ============================================================
-
 const TIMEZONE = "Asia/Singapore"; // GMT+8, fixed offset, no DST
 
 const DAILY_SHEET_NAME = "Data";
@@ -118,20 +112,32 @@ function getDailyEntries_(e) {
   const values = sheet.getDataRange().getValues();
   const rows = values.slice(1); // drop header row
 
-  const result = rows
-    .filter(function (row) { return !dateFilter || row[1] === dateFilter; })
-    .map(function (row) {
-      return {
-        date: row[1],
-        time: row[2],
-        bunk: row[3],
-        name: row[4],
-        pushups: row[5],
-        situps: row[6],
-        squats: row[7],
-        run: row[8],
-      };
-    });
+  const filtered = rows.filter(function (row) { return !dateFilter || row[1] === dateFilter; });
+
+  // Keep only the most recent submission per bunk+name, in case someone
+  // submitted more than once on the same day.
+  const latestByPerson = {};
+  filtered.forEach(function (row) {
+    const key = row[3] + "|" + row[4]; // bunk|name
+    const timestamp = row[0] instanceof Date ? row[0].getTime() : new Date(row[0]).getTime();
+    if (!latestByPerson[key] || timestamp > latestByPerson[key].timestamp) {
+      latestByPerson[key] = { row: row, timestamp: timestamp };
+    }
+  });
+
+  const result = Object.keys(latestByPerson).map(function (key) {
+    const row = latestByPerson[key].row;
+    return {
+      date: row[1],
+      time: row[2],
+      bunk: row[3],
+      name: row[4],
+      pushups: row[5],
+      situps: row[6],
+      squats: row[7],
+      run: row[8],
+    };
+  });
 
   return jsonOutput_(result);
 }

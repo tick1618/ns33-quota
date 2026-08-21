@@ -151,9 +151,7 @@ async function loadDailyEntries(dateStr) {
       .map(
         (r) => `
         <tr>
-          <td><span class="bunk-badge">${r.bunk}</span></td>
-          <td>${escapeHtml(r.name)}</td>
-          <td>${r.pushups}</td>
+          <td><span class="bunk-badge bunk-${r.bunk}">${r.bunk}</span></td>
           <td>${r.situps}</td>
           <td>${r.squats}</td>
           <td>${escapeHtml(String(r.run))}</td>
@@ -190,7 +188,7 @@ async function loadWeeklyEntries(week) {
       .map(
         (r) => `
         <tr>
-          <td><span class="bunk-badge">${r.bunk}</span></td>
+          <td><span class="bunk-badge bunk-${r.bunk}">${r.bunk}</span></td>
           <td>${escapeHtml(r.name)}</td>
           <td>${escapeHtml(String(r.distance))}</td>
         </tr>`
