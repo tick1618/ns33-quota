@@ -152,6 +152,8 @@ async function loadDailyEntries(dateStr) {
         (r) => `
         <tr>
           <td><span class="bunk-badge bunk-${r.bunk}">${r.bunk}</span></td>
+          <td>${escapeHtml(r.name)}</td>
+          <td>${r.pushups}</td>
           <td>${r.situps}</td>
           <td>${r.squats}</td>
           <td>${escapeHtml(String(r.run))}</td>
